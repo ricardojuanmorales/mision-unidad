@@ -1,0 +1,67 @@
+name: Publicar en GitHub Pages
+
+# Publica el juego en una dirección web tras cada push a main.
+# Requisito previo, una sola vez: en el repositorio, Settings → Pages →
+# "Source: GitHub Actions".
+on:
+  push:
+    branches: [main]
+  # También se puede lanzar a mano desde la pestaña "Actions".
+  workflow_dispatch:
+
+# Permisos mínimos necesarios para publicar.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si se empujan varios commits seguidos, se publica el último y se
+# cancelan las publicaciones intermedias que aún estén en cola.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    name: Compilar el sitio
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # No se publica nada que no haya pasado las pruebas: una URL pública
+      # con el juego roto sería peor que no tener URL.
+      - name: Ejecutar las pruebas antes de publicar
+        run: npm test
+
+      - name: Compilar
+        run: npm run build
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir el sitio compilado
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  publicar:
+    name: Publicar
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
