@@ -6,8 +6,7 @@ Juego educativo web para aprender y practicar conversiones de unidades de cantid
 Dirigido a estudiantes de escuela intermedia, escuela superior y primeros cursos universitarios de ciencias.
 
 > **Jugar en línea:** una vez activado GitHub Pages, el juego queda disponible en
-> `https://TU-USUARIO.github.io/mision-unidad/` — sustituye `TU-USUARIO` por tu nombre de
-> usuario de GitHub y actualiza este enlace.
+> <https://ricardojuanmorales.github.io/mision-unidad/>
 >
 > También puedes generar un archivo HTML único (`npm run build:single`) que se abre con
 > doble clic, sin servidor ni conexión.
@@ -73,7 +72,7 @@ El archivo de `dist-single/` incluye **todo** (HTML, CSS y JavaScript) en un ún
 ## Pruebas
 
 ```bash
-npm test          # ejecuta las 341 pruebas
+npm test          # ejecuta las 375 pruebas
 npm run typecheck # verifica los tipos sin compilar
 ```
 
